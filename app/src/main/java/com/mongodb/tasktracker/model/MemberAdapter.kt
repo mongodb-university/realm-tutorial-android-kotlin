@@ -43,9 +43,21 @@ internal class MemberAdapter(private val data: ArrayList<Member>, private val us
                 dialogBuilder.setMessage("Are you sure you want to remove this user from the project?")
                     .setCancelable(true)
                     .setPositiveButton("Remove User") { dialog, _ ->
-                        // TODO: Call the `removeTeamMember` Realm Function through `taskApp` to remove the selected user from the project.
-                        // When the function completes, remember to dismiss the dialog.
-                        // If the function successfully removes the team member, remove the team member from the displayed data and notify the Adapter that an item has been removed.
+                        val functionsManager: Functions = taskApp.getFunctions(user)
+                        functionsManager.callFunctionAsync("removeTeamMember",
+                            listOf(obj.name), Document::class.java) { result ->
+                            run {
+                                dialog.dismiss()
+                                if (result.isSuccess) {
+                                    Log.v(TAG(), "removed team member: ${result.get()}")
+                                    data.removeAt(position)
+                                    notifyItemRemoved(position)
+                                } else {
+                                    Log.e(TAG(), "failed to remove team member with: " + result.error)
+                                    Toast.makeText(parent.context, result.error.toString(), Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
                     }
                     .setNegativeButton("Cancel") { dialog, _ ->
                         dialog.cancel()
