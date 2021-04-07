@@ -24,6 +24,7 @@ class TaskTracker : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // Initialize the Realm SDK
         Realm.init(this)
         taskApp = App(
             AppConfiguration.Builder(BuildConfig.MONGODB_REALM_APP_ID)
