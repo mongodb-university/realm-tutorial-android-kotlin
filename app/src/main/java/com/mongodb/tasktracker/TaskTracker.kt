@@ -24,7 +24,9 @@ class TaskTracker : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        // TODO: Initialize the Realm SDK and create the App object we will use to communicate with the Realm backend.
+        // Initialize the Realm SDK
+        Realm.init(this)
+        // TODO: Create the App object we will use to communicate with the Realm backend.
 
         // Enable more logging in debug mode
         if (BuildConfig.DEBUG) {
