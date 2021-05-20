@@ -113,7 +113,7 @@ class TaskActivity : AppCompatActivity() {
         // Realm provides RealmRecyclerViewAdapter, which you can extend to customize for your application
         // pass the adapter a collection of Tasks from the realm
         // sort this collection so that the displayed order of Tasks remains stable across updates
-        adapter = TaskAdapter(realm.where<Task>().sort("_id").findAll(), user!!, partition)
+        adapter = TaskAdapter(realm.where<Task>().sort("id").findAll(), user!!, partition)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
