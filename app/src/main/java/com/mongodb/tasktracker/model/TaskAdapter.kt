@@ -66,14 +66,14 @@ internal class TaskAdapter(data: OrderedRealmCollection<Task>, val user: io.real
                             status = TaskStatus.Complete
                         }
                         deleteCode -> {
-                            removeAt(holder.data?._id!!)
+                            removeAt(holder.data?.id!!)
                         }
                     }
 
                     // if the status variable has a new value, update the status of the task in realm
                     if (status != null) {
-                        Log.v(TAG(), "Changing status of ${holder.data?.name} (${holder.data?._id}) to $status")
-                        changeStatus(status!!, holder.data?._id)
+                        Log.v(TAG(), "Changing status of ${holder.data?.name} (${holder.data?.id}) to $status")
+                        changeStatus(status, holder.data?.id!!)
                     }
                     true
                 }
@@ -82,7 +82,7 @@ internal class TaskAdapter(data: OrderedRealmCollection<Task>, val user: io.real
         }
     }
 
-    private fun changeStatus(status: TaskStatus, _id: ObjectId?) {
+    private fun changeStatus(status: TaskStatus, id: ObjectId) {
         // TODO: Change the status of the specified Task object in the project realm.
         // Step 1: Connect to the project realm using the `partition` member variable of the adapter.
         // Step 2: Query the realm for the Task with the specified _id value.

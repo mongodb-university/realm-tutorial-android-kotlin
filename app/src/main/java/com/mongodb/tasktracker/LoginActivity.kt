@@ -71,6 +71,7 @@ class LoginActivity : AppCompatActivity() {
             // TODO: Register a new user with the supplied username and password when the "Create" button is pressed.
         } else {
             // TODO: Log in with the supplied username and password when the "Log in" button is pressed.
+            onLoginFailed("Couldn't log in. Configure your App ID and login handler.")
         }
     }
 }

@@ -73,13 +73,6 @@ class MemberActivity : AppCompatActivity() {
     }
 
     private fun setUpRecyclerView() {
-        // TODO: Call the `getMyTeamMembers` function to get a list of team members, then display them in a RecyclerView with the following code:
-        // The `getMyTeamMembers` function returns team members as Document objects. Convert them into Member objects so the MemberAdapter can display them.
-        // this.members = ArrayList(result.get().map { item -> Member(item as Document) })
-        // adapter = MemberAdapter(members, user!!)
-        // recyclerView.layoutManager = LinearLayoutManager(this)
-        // recyclerView.adapter = adapter
-        // recyclerView.setHasFixedSize(true)
-        // recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        // TODO: Call the `getMyTeamMembers` function to get a list of team members, then display them in a RecyclerView
     }
 }
