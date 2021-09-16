@@ -6,10 +6,10 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mongodb.tasktracker.R
+import com.mongodb.tasktracker.RealmRecyclerViewAdapter
 import com.mongodb.tasktracker.TAG
 import io.realm.OrderedRealmCollection
 import io.realm.Realm
-import io.realm.RealmRecyclerViewAdapter
 import io.realm.kotlin.where
 import io.realm.mongodb.sync.SyncConfiguration
 import org.bson.types.ObjectId

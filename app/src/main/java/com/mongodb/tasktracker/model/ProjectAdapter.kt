@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.mongodb.tasktracker.*
 import io.realm.RealmList
-import io.realm.RealmRecyclerViewAdapter
 import io.realm.mongodb.User
 
 /*
