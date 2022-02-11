@@ -2,7 +2,9 @@ package com.mongodb.tasktracker.model
 
 import android.app.AlertDialog
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -16,13 +18,17 @@ import org.bson.Document
 * MemberAdapter: extends the Android RecyclerView Adapter to display a collection of Member objects
 * in a RecyclerView.
 */
-
-internal class MemberAdapter(private val data: ArrayList<Member>, private val user : io.realm.mongodb.User) :
+internal class MemberAdapter(
+    private val data: ArrayList<Member>,
+    private val user: io.realm.mongodb.User
+) :
     RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
-    lateinit var parent : ViewGroup
+    lateinit var parent: ViewGroup
 
-    override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): MemberAdapter.MemberViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): MemberAdapter.MemberViewHolder {
         // save a reference to the parent view so we can create dialogs later
         this.parent = parent
         Log.i(TAG(), "Displaying a list of project members. Size: ${data.size}")
@@ -43,9 +49,32 @@ internal class MemberAdapter(private val data: ArrayList<Member>, private val us
                 dialogBuilder.setMessage("Are you sure you want to remove this user from the project?")
                     .setCancelable(true)
                     .setPositiveButton("Remove User") { dialog, _ ->
-                        // TODO: Call the `removeTeamMember` Realm Function through `taskApp` to remove the selected user from the project.
                         // When the function completes, remember to dismiss the dialog.
                         // If the function successfully removes the team member, remove the team member from the displayed data and notify the Adapter that an item has been removed.
+                        val functionsManager: Functions = taskApp.getFunctions(user)
+                        functionsManager.callFunctionAsync(
+                            "removeTeamMember",
+                            listOf(obj.name), Document::class.java
+                        ) { result ->
+                            run {
+                                dialog.dismiss()
+                                if (result.isSuccess) {
+                                    Log.v(TAG(), "removed team member: ${result.get()}")
+                                    data.removeAt(position)
+                                    notifyItemRemoved(position)
+                                } else {
+                                    Log.e(
+                                        TAG(),
+                                        "failed to remove team member with: " + result.error
+                                    )
+                                    Toast.makeText(
+                                        parent.context,
+                                        result.error.toString(),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                        }
                     }
                     .setNegativeButton("Cancel") { dialog, _ ->
                         dialog.cancel()

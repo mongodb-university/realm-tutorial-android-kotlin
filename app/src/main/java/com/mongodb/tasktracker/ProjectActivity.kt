@@ -1,11 +1,11 @@
 package com.mongodb.tasktracker
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +15,6 @@ import com.mongodb.tasktracker.model.User
 import io.realm.*
 import io.realm.kotlin.where
 import io.realm.mongodb.sync.SyncConfiguration
-import org.bson.types.ObjectId
 
 /*
 * ProjectActivity: allows a user to view a collection of Projects. Clicking on a project launches a
@@ -36,7 +35,19 @@ class ProjectActivity : AppCompatActivity() {
             // if no user is currently logged in, start the login activity so the user can authenticate
             startActivity(Intent(this, LoginActivity::class.java))
         } else {
-            // TODO: initialize a connection to a realm containing the user's User object
+            // configure realm to use the current user and the partition corresponding to the user's project
+            val config = SyncConfiguration.Builder(user!!, "user=${user!!.id}")
+                .build()
+
+            // Sync all realm changes via a new instance, and when that instance has been successfully created connect it to an on-screen list (a recycler view)
+            Realm.getInstanceAsync(config, object : Realm.Callback() {
+                override fun onSuccess(realm: Realm) {
+                    // since this realm should live exactly as long as this activity, assign the realm to a member variable
+                    this@ProjectActivity.userRealm = realm
+                    setUpRecyclerView(getProjects(realm))
+                }
+            })
+
         }
     }
 
@@ -46,9 +57,18 @@ class ProjectActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.project_list)
     }
 
-    // TODO: always ensure that the user realm closes when the activity ends via the onStop lifecycle method
+    override fun onStop() {
+        super.onStop()
+        user.run {
+            userRealm?.close()
+        }
+    }
 
-    // TODO: always ensure that the user realm closes when the activity ends via the onDestroy lifecycle method
+    override fun onDestroy() {
+        super.onDestroy()
+        userRealm?.close()
+        recyclerView.adapter = null
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_task_menu, menu)
@@ -77,17 +97,27 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun getProjects(realm: Realm): RealmList<Project> {
         // query for a user object in our user realm, which should only contain our user object
-        // TODO: query the realm to get a copy of the currently logged in user's User object (or null, if the trigger didn't create it yet)
-        var syncedUser : User? = null
+        val syncedUsers: RealmResults<User> = realm.where<User>().sort("id").findAll()
+        val syncedUser: User? =
+            syncedUsers.getOrNull(0) // since there might be no user objects in the results, default to "null"
+
         // if a user object exists, create the recycler view and the corresponding adapter
         if (syncedUser != null) {
             return syncedUser.memberOf
         } else {
             // since a trigger creates our user object after initial signup, the object might not exist immediately upon first login.
             // if the user object doesn't yet exist (that is, if there are no users in the user realm), call this function again when it is created
-            Log.i(TAG(), "User object not yet initialized, only showing default user project until initialization.")
+            Log.i(
+                TAG(),
+                "User object not yet initialized, only showing default user project until initialization."
+            )
             // change listener on a query for our user object lets us know when the user object has been created by the auth trigger
-            // TODO: set up a change listener that will set up the recycler view once our trigger initializes the user's User object
+            val changeListener =
+                OrderedRealmCollectionChangeListener<RealmResults<User>> { results, changeSet ->
+                    Log.i(TAG(), "User object initialized, displaying project list.")
+                    setUpRecyclerView(getProjects(realm))
+                }
+            syncedUsers.addChangeListener(changeListener)
 
             // user should have a personal project no matter what, so create it if it doesn't already exist
             // RealmRecyclerAdapters only work on managed objects,
@@ -97,7 +127,8 @@ class ProjectActivity : AppCompatActivity() {
             val fakeRealm = Realm.getInstance(
                 RealmConfiguration.Builder()
                     .allowWritesOnUiThread(true)
-                    .inMemory().build())
+                    .inMemory().build()
+            )
             var projectsList: RealmList<Project>? = null
             var fakeCustomUserData = fakeRealm.where(User::class.java).findFirst()
             if (fakeCustomUserData == null) {
