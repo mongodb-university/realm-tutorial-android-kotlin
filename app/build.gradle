@@ -6,6 +6,7 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 30
+    buildToolsVersion "29.0.2"
 
     defaultConfig {
         applicationId "com.mongodb.tasktracker"
@@ -18,7 +19,7 @@ android {
     }
 
     buildTypes {
-        def appId = "tasktracker-ptqom"  // Replace with proper Application ID
+        def appId = "<your app ID here>"  // Replace with proper Application ID
         debug {
             buildConfigField "String", "MONGODB_REALM_APP_ID", "\"${appId}\""
         }

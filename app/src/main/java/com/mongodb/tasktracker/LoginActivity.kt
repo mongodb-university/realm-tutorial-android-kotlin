@@ -1,13 +1,12 @@
 package com.mongodb.tasktracker
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import io.realm.mongodb.Credentials
-
 /*
 * LoginActivity: launched whenever a user isn't already logged in. Allows a user to enter email
 * and password credentials to log in to an existing account or create a new account.
@@ -69,32 +68,10 @@ class LoginActivity : AppCompatActivity() {
 
         if (createUser) {
             // register a user using the Realm App we created in the TaskTracker class
-            taskApp.emailPassword.registerUserAsync(username, password) {
-                // re-enable the buttons after user registration returns a result
-                createUserButton.isEnabled = true
-                loginButton.isEnabled = true
-                if (!it.isSuccess) {
-                    onLoginFailed("Could not register user.")
-                    Log.e(TAG(), "Error: ${it.error}")
-                } else {
-                    Log.i(TAG(), "Successfully registered user.")
-                    // when the account has been created successfully, log in to the account
-                    login(false)
-                }
-            }
-
+            // TODO: Register a new user with the supplied username and password when the "Create" button is pressed.
         } else {
-            val creds = Credentials.emailPassword(username, password)
-            taskApp.loginAsync(creds) {
-                // re-enable the buttons after user login returns a result
-                loginButton.isEnabled = true
-                createUserButton.isEnabled = true
-                if (!it.isSuccess) {
-                    onLoginFailed(it.error.message ?: "An error occurred.")
-                } else {
-                    onLoginSuccess()
-                }
-            }
+            // TODO: Log in with the supplied username and password when the "Log in" button is pressed.
+            onLoginFailed("Couldn't log in. Configure your App ID and login handler.")
         }
     }
 }
