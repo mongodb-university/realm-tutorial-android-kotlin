@@ -68,6 +68,8 @@ class LoginActivity : AppCompatActivity() {
 
         if (createUser) {
             // register a user using the Realm App we created in the TaskTracker class
+            // :code-block-start: create-user
+            // :state-start: final
             taskApp.emailPassword.registerUserAsync(username, password) {
                 // re-enable the buttons after user registration returns a result
                 createUserButton.isEnabled = true
@@ -81,7 +83,13 @@ class LoginActivity : AppCompatActivity() {
                     login(false)
                 }
             }
+            // :state-end: :state-uncomment-start: start
+            //// TODO: Register a new user with the supplied username and password when the "Create" button is pressed.
+            // :state-uncomment-end:
+            // :code-block-end:
         } else {
+            // :code-block-start: login-user
+            // :state-start: final
             val creds = Credentials.emailPassword(username, password)
             taskApp.loginAsync(creds) {
                 // re-enable the buttons after user login returns a result
@@ -93,6 +101,11 @@ class LoginActivity : AppCompatActivity() {
                     onLoginSuccess()
                 }
             }
+            // :state-end: :state-uncomment-start: start
+            //// TODO: Log in with the supplied username and password when the "Log in" button is pressed.
+            //onLoginFailed("Couldn't log in. Configure your App ID and login handler.")
+            // :state-uncomment-end:
+            // :code-block-end:
         }
     }
 }

@@ -54,6 +54,8 @@ class MemberActivity : AppCompatActivity() {
                 .setCancelable(true)
                 .setPositiveButton("Add User") { dialog, _ ->
                     dialog.dismiss()
+                    // :code-block-start: add-new-member-to-project
+                    // :state-start: final
                     val functionsManager: Functions = taskApp.getFunctions(user)
                     functionsManager.callFunctionAsync(
                         "addTeamMember",
@@ -69,6 +71,10 @@ class MemberActivity : AppCompatActivity() {
                             Toast.makeText(this, result.error.errorMessage, Toast.LENGTH_LONG).show()
                         }
                     }
+                    // :state-end: :state-uncomment-start: start
+                    //// TODO: Add the new team member to the project by calling the `addTeamMember` Realm Function through `taskApp`.
+                    // :state-uncomment-end:
+                    // :code-block-end:
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
                     dialog.cancel()
@@ -87,6 +93,8 @@ class MemberActivity : AppCompatActivity() {
     }
 
     private fun setUpRecyclerView() {
+        // :code-block-start: get-team-members
+        // :state-start: final
         val functionsManager: Functions = taskApp.getFunctions(user)
         // get team members by calling a Realm Function which returns a list of members
         functionsManager.callFunctionAsync("getMyTeamMembers", ArrayList<String>(), ArrayList::class.java) { result ->
@@ -103,5 +111,9 @@ class MemberActivity : AppCompatActivity() {
                 Log.e(TAG(), "failed to get team members with: " + result.error)
             }
         }
+        // :state-end: :state-start: start
+        // TODO: Call the `getMyTeamMembers` function to get a list of team members, then display them in a RecyclerView
+        // :state-end:
+        // :code-block-end:
     }
 }
