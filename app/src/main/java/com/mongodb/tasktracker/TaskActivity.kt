@@ -47,38 +47,11 @@ class TaskActivity : AppCompatActivity() {
             // display the name of the project in the action bar via the title member variable of the Activity
             title = projectName
 
-            // :code-block-start: set-up-project-realm
-            // :state-start: final
-            val config = SyncConfiguration.Builder(user!!, partition)
-                .build()
-
-            // Sync all realm changes via a new instance, and when that instance has been successfully created connect it to an on-screen list (a recycler view)
-            Realm.getInstanceAsync(config, object: Realm.Callback() {
-                override fun onSuccess(realm: Realm) {
-                    // since this realm should live exactly as long as this activity, assign the realm to a member variable
-                    this@TaskActivity.projectRealm = realm
-                    setUpRecyclerView(realm, user, partition)
-                }
-            })
-            // :state-end: :state-uncomment-start: start
-            //// TODO: initialize a connection to a realm containing all of the Tasks in this project
-            // :state-uncomment-end:
-            // :code-block-end:
+            // TODO: initialize a connection to a realm containing all of the Tasks in this project
         }
     }
 
-    // :code-block-start: on-stop-close-realm
-    // :state-start: final
-    override fun onStop() {
-        super.onStop()
-        user.run {
-            projectRealm.close()
-        }
-    }
-    // :state-end: :state-uncomment-start: start
-    //// TODO: always ensure that the project realm closes when the activity ends via the onStop lifecycle method
-    // :state-uncomment-end:
-    // :code-block-end:
+    // TODO: always ensure that the project realm closes when the activity ends via the onStop lifecycle method
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,17 +68,7 @@ class TaskActivity : AppCompatActivity() {
                 .setCancelable(true)
                 .setPositiveButton("Create") { dialog, _ -> run {
                     dialog.dismiss()
-                    // :code-block-start: add-new-task-to-project
-                    // :state-start: final
-                    val task = Task(input.text.toString())
-                    // all realm writes need to occur inside of a transaction
-                    projectRealm.executeTransactionAsync { realm ->
-                        realm.insert(task)
-                    }
-                    // :state-end: :state-uncomment-start: start
-                    //// TODO: Add a new task to the project by inserting into the realm when the user clicks "create" for a new task.
-                    // :state-uncomment-end:
-                    // :code-block-end:
+                    // TODO: Add a new task to the project by inserting into the realm when the user clicks "create" for a new task.
                 }
                 }
                 .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel()
@@ -118,18 +81,7 @@ class TaskActivity : AppCompatActivity() {
         }
     }
 
-    // :code-block-start: on-destroy-close-realm
-    // :state-start: final
-    override fun onDestroy() {
-        super.onDestroy()
-        recyclerView.adapter = null
-        // if a user hasn't logged out when the activity exits, still need to explicitly close the realm
-        projectRealm.close()
-    }
-    // :state-end: :state-uncomment-start: start
-    //// TODO: always ensure that the project realm closes when the activity ends via the onDestroy lifecycle method
-    // :state-uncomment-end:
-    // :code-block-end:
+    // TODO: always ensure that the project realm closes when the activity ends via the onDestroy lifecycle method
 
 
     private fun setUpRecyclerView(realm: Realm, user: User?, partition: String) {
@@ -137,13 +89,7 @@ class TaskActivity : AppCompatActivity() {
         // Realm provides RealmRecyclerViewAdapter, which you can extend to customize for your application
         // pass the adapter a collection of Tasks from the realm
         // sort this collection so that the displayed order of Tasks remains stable across updates
-        // :code-block-start: fetch-tasks-for-project-sorted-by-id
-        // :state-start: final
-        adapter = TaskAdapter(realm.where<Task>().sort("id").findAll(), user!!, partition)
-        // :state-end: :state-uncomment-start: start
-        //// TODO: Query the realm for Task objects, sorted by a stable order that remains consistent between runs.
-        // :state-uncomment-end:
-        // :code-block-end:
+        // TODO: Query the realm for Task objects, sorted by a stable order that remains consistent between runs.
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)

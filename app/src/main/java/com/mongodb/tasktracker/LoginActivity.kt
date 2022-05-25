@@ -68,44 +68,10 @@ class LoginActivity : AppCompatActivity() {
 
         if (createUser) {
             // register a user using the Realm App we created in the TaskTracker class
-            // :code-block-start: create-user
-            // :state-start: final
-            taskApp.emailPassword.registerUserAsync(username, password) {
-                // re-enable the buttons after user registration returns a result
-                createUserButton.isEnabled = true
-                loginButton.isEnabled = true
-                if (!it.isSuccess) {
-                    onLoginFailed("Could not register user.")
-                    Log.e(TAG(), "Error: ${it.error}")
-                } else {
-                    Log.i(TAG(), "Successfully registered user.")
-                    // when the account has been created successfully, log in to the account
-                    login(false)
-                }
-            }
-            // :state-end: :state-uncomment-start: start
-            //// TODO: Register a new user with the supplied username and password when the "Create" button is pressed.
-            // :state-uncomment-end:
-            // :code-block-end:
+            // TODO: Register a new user with the supplied username and password when the "Create" button is pressed.
         } else {
-            // :code-block-start: login-user
-            // :state-start: final
-            val creds = Credentials.emailPassword(username, password)
-            taskApp.loginAsync(creds) {
-                // re-enable the buttons after user login returns a result
-                loginButton.isEnabled = true
-                createUserButton.isEnabled = true
-                if (!it.isSuccess) {
-                    onLoginFailed(it.error.message ?: "An error occurred.")
-                } else {
-                    onLoginSuccess()
-                }
-            }
-            // :state-end: :state-uncomment-start: start
-            //// TODO: Log in with the supplied username and password when the "Log in" button is pressed.
-            //onLoginFailed("Couldn't log in. Configure your App ID and login handler.")
-            // :state-uncomment-end:
-            // :code-block-end:
+            // TODO: Log in with the supplied username and password when the "Log in" button is pressed.
+            onLoginFailed("Couldn't log in. Configure your App ID and login handler.")
         }
     }
 }
