@@ -1,6 +1,8 @@
-# Realm Android Kotlin Tutorial
+# ⚠️ Archived
 
-Follow along at https://www.mongodb.com/docs/realm/tutorial/android-kotlin/
+**Please see https://www.mongodb.com/docs/atlas/app-services/tutorial/kotlin for the new tutorial!**
+
+Original README follows:
 
 You can run this project by opening it in Android Studio version 4 or later.
 
